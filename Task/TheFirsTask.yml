@@ -1,0 +1,16 @@
+---
+- name: use role for the task
+  host: test
+  become: true
+  
+
+  pre_tasks:
+    - debug:
+        msg: 'Begining the tasks'
+  
+  roles:
+    - homework
+
+  post_tasks:
+    - debug:
+        msg: 'Ending the tasks'

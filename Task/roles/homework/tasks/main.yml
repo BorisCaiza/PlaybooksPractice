@@ -1,0 +1,109 @@
+---
+
+- name: Create user student
+  user:
+    name: student
+    state: present
+
+- name: Create myPlaybook
+  file:
+    path: /tmp/myplaybook
+    owner: student
+    group: student
+    state: directory
+    mode: "0644"
+  
+- name: Create my test
+  template:
+    src: myTest.j2
+    dest: /tmp/myplaybook
+    owner: student
+    group: student
+    mode: "0644"
+
+
+  
+- name: Print Red Hat distribution
+  debug:
+    msg: "Distribution ansible is red hat"
+  when: ansible_distribution == "RedHat"
+
+
+- name: Install httpd and firewalld
+  yum:
+    name: "{{item}}"
+    state: latest
+  loop:
+    - httpd
+    - firewalld
+
+- name: Httpd and firewalld actived and enabled
+  services:
+    name: "{{item}}"
+    enabled: true
+    state: started
+  loop:
+    - httpd
+    - firewalld  
+
+- name: Allow httpd
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    inmediate: true  
+  
+- name: Print availables updates 
+  debug:
+    var: updates.stdout_lines
+
+
+- name: Create a file with file module
+  file:
+    path: /tmp/evidencias
+    state: touch
+    owner: student
+    mode: "0644"
+
+
+- name: Execute uptime and save in /tmp/evidencias
+  shell: uptime > /tmp/evidencias
+  register: uptime_output
+
+- name: Execute cat /etc/resolv.conf and save in /tmp/evidencias
+  shell: cat /etc/resolv.conf >> /tmp/evidencias
+  register: resolv_output
+
+- name: Execute df -h and save in /tmp/evidencias
+  shell: df -h >> /tmp/evidencias
+  register: df_output
+
+- name: Print (for knowing if I do good)
+  debug:
+    var:
+      - uptime_output.stdout
+      - resolv_output.stdout
+      - df_output.stdout
+
+- name: Update package except htttpd
+  yum:
+    name: '*'
+    state: latest
+    exclude: httpd
+
+- name: Reebot system
+  reboot:
+
+
+- name: Create a file with file module 2
+  file:
+    path: /tmp/distribucion
+    state: touch
+    owner: student
+    mode: "0644"
+
+- name: Print distribution in /tmp/distribution
+  lineinfile:
+    path: /tmp/distribution
+    line: "{{ ansible_distribution }}"  
+    create: yes
