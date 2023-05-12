@@ -18,7 +18,7 @@
     service:
       name: httpd
       enabled: true      
-      state: start        
+      state: started        
        
   - name: copy index.html
     copy:      
