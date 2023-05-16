@@ -1,0 +1,6 @@
+1. Install on one of the ansible hosts
+2. In the file /etc/hosts add the hosts (to avoid working with IP addresses)
+3. Install ssh (in case it does not exist).
+4.  Go to the file containing ansible /etc/ssh/sshd_config, and uncomment PermitRootLogin and PubKeyAuthentication (on all machines). 
+5. On the ansible host, generate a public and private key with the command ssh-keygen, then copy with ssh-copy-id user@remote_host
+6. If all goes well you can run playbooks now 
